@@ -52,12 +52,9 @@ class Mascota(arcade.Sprite):
             count=COLUMNS * ROWS
         )
 
-        # Dividir texturas por filas (suponiendo orden lineal: 0-3 fila 1, 4-7 fila 2, etc.)
-        # Según feedback corregido: 
-        # Idle: Primeras 2 columnas (Indices 0, 1)
-        # Jump/Play: Últimas 2 columnas (Indices 2, 3)
-        self.idle_textures = texture_list[2:4]
-        self.jump_textures = texture_list[0:2] 
+        
+        self.jump_textures = texture_list[0:4]
+        self.idle_textures = texture_list[8:10]
 
         # Estado inicial de animación
         self.cur_texture = 0
