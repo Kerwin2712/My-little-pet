@@ -31,7 +31,12 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Configuración del juego y variables """
-        self.mascota = Mascota("Bolita")
+        # Inicializar mascota en el centro
+        self.mascota = Mascota("Bolita", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        
+        # Crear lista de sprites
+        self.lista_sprites = arcade.SpriteList()
+        self.lista_sprites.append(self.mascota)
 
     def on_draw(self):
         """ Renderizado """
@@ -49,11 +54,6 @@ class MyGame(arcade.Window):
         bar_height = 20
         bar_width = 200
         spacing = 30
-
-        # Calculamos la base Y para las 4 barras para que crezcan hacia arriba
-        # Orden de abajo hacia arriba: Hambre, Energía, Felicidad, Suciedad (o al revés, como prefieras)
-        # Vamos a dibujarlas de arriba hacia abajo empezando desde una posición base calculada
-        # O mejor, apilarlas desde abajo:
         
         current_y = margin_y
 
@@ -89,26 +89,11 @@ class MyGame(arcade.Window):
         arcade.draw_text(estado_texto, 20, screen_h - 40, arcade.color.BLACK, 20, anchor_x="left")
 
         # --- Dibujar instrucciones (Parte superior central) ---
-        instrucciones = "F: Alimentar | J: Jugar | L: Limpiar | D: Dormir"
+        instrucciones = "F: Alimentar | J: Jugar | L: Limpiar | D: Dormir | ESPACIO: Saltar"
         arcade.draw_text(instrucciones, screen_w / 2, screen_h - 80, arcade.color.DARK_BLUE, 16, anchor_x="center")
 
-        # --- Dibujar Mascota (Centro de la pantalla) ---
-        center_x = screen_w / 2
-        center_y = screen_h / 2
-        
-        # Cuerpo
-        arcade.draw_circle_filled(center_x, center_y, 50, arcade.color.WHITE)
-        arcade.draw_circle_outline(center_x, center_y, 50, arcade.color.BLACK, 2)
-        # Ojos
-        arcade.draw_circle_filled(center_x - 15, center_y + 10, 5, arcade.color.BLACK)
-        arcade.draw_circle_filled(center_x + 15, center_y + 10, 5, arcade.color.BLACK)
-        # Boca (cambia según felicidad)
-        if self.mascota.felicidad > 50:
-             # Sonrisa
-             arcade.draw_arc_outline(center_x, center_y - 5, 20, 10, arcade.color.BLACK, 180, 360, 2)
-        else:
-             # Triste / Serio
-             arcade.draw_arc_outline(center_x, center_y - 15, 20, 10, arcade.color.BLACK, 0, 180, 2)
+        # --- Dibujar Mascota ---
+        self.lista_sprites.draw()
 
 
     def on_update(self, delta_time):
@@ -125,6 +110,16 @@ class MyGame(arcade.Window):
             self.mascota.limpiar()
         elif key == arcade.key.D:
             self.mascota.dormir()
+        elif key == arcade.key.SPACE:
+            self.mascota.saltar()
+
+    def on_resize(self, width, height):
+        """ Llamado cuando se redimensiona la ventana """
+        super().on_resize(width, height)
+        
+        # Centrar la mascota
+        self.mascota.center_x = width / 2
+        self.mascota.center_y = height / 2
 
 def main():
     """ Función principal """
